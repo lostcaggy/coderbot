@@ -25,21 +25,21 @@ import logging
 import sonar
 
 PIN_MOTOR_ENABLE = 22
-PIN_LEFT_FORWARD = 25
-PIN_LEFT_BACKWARD = 24
-PIN_RIGHT_FORWARD = 4
-PIN_RIGHT_BACKWARD = 17
+PIN_LEFT_FORWARD = 8
+PIN_LEFT_BACKWARD = 7
+PIN_RIGHT_FORWARD = 10
+PIN_RIGHT_BACKWARD = 9
 PIN_PUSHBUTTON = 11
-PIN_SERVO_3 = 9
-PIN_SERVO_4 = 10
-PIN_SONAR_1_TRIGGER = 18
-PIN_SONAR_1_ECHO = 7
-PIN_SONAR_2_TRIGGER = 18
-PIN_SONAR_2_ECHO = 8
-PIN_SONAR_3_TRIGGER = 18
-PIN_SONAR_3_ECHO = 23
-PIN_ENCODER_LEFT = 14
-PIN_ENCODER_RIGHT = 15
+#PIN_SERVO_3 = 9
+#PIN_SERVO_4 = 10
+PIN_SONAR_1_TRIGGER = 17
+PIN_SONAR_1_ECHO = 18
+#PIN_SONAR_2_TRIGGER = 18
+#PIN_SONAR_2_ECHO = 8
+#PIN_SONAR_3_TRIGGER = 18
+#PIN_SONAR_3_ECHO = 23
+#PIN_ENCODER_LEFT = 14
+#PIN_ENCODER_RIGHT = 15
 
 PWM_FREQUENCY = 100 #Hz
 PWM_RANGE = 100 #0-100
@@ -75,7 +75,7 @@ class CoderBot:
     self._is_moving = False
     self.sonar = [sonar.Sonar(self.pi, PIN_SONAR_1_TRIGGER, PIN_SONAR_1_ECHO),
                   sonar.Sonar(self.pi, PIN_SONAR_2_TRIGGER, PIN_SONAR_2_ECHO),
-                  sonar.Sonar(self.pi, PIN_SONAR_3_TRIGGER, PIN_SONAR_3_ECHO)] 
+                  sonar.Sonar(self.pi, PIN_SONAR_3_TRIGGER, PIN_SONAR_3_ECHO)]
     self._encoder_cur_left = 0
     self._encoder_cur_right = 0
     self._encoder_target_left = -1
@@ -127,7 +127,7 @@ class CoderBot:
     self._encoder_cur_right = 0
     self._encoder_target_left = steps_left
     self._encoder_target_right = steps_right
-    
+
     self._is_moving = True
     if speed_left < 0:
       speed_left = abs(speed_left)
@@ -210,7 +210,7 @@ class CoderBot:
         elapse = self._cb_elapse.get(gpio)
         if level == 0:
           self._cb_last_tick[gpio] = tick
-        elif tick - self._cb_last_tick[gpio] > elapse: 
+        elif tick - self._cb_last_tick[gpio] > elapse:
           self._cb_last_tick[gpio] = tick
           print "pushed: ", level, tick
           cb()
@@ -226,5 +226,3 @@ class CoderBot:
 
   def sleep(self, elapse):
     time.sleep(elapse)
-
-  
