@@ -35,7 +35,7 @@ Blockly.Blocks['coderbot_repeat'] = {
     	di.appendField(new Blockly.FieldImage('/images/blocks/loop_repeat.png', 32, 32, '*'));
     } else {
         di.appendField(Blockly.Msg.CONTROLS_REPEAT_TITLE_REPEAT)
-    }		
+    }
     di.appendField(new Blockly.FieldTextInput('10',
             Blockly.FieldTextInput.nonnegativeIntegerValidator), 'TIMES');
     if(CODERBOT_PROG_LEVEL.indexOf("basic")<0) {
@@ -61,13 +61,6 @@ Blockly.Python['coderbot_repeat'] = function(block) {
       'count', Blockly.Variables.NAME_TYPE);
   var code = 'for ' + loopVar + ' in range(' + repeats + '):\n' + branch;
   return code;
-};
-
-Blockly.Python['text_print'] = function(block) {
-  // Print statement.
-  var argument0 = Blockly.Python.valueToCode(block, 'TEXT',
-      Blockly.Python.ORDER_NONE) || '\'\'';
-  return 'get_cam().set_text(' + argument0 + ')\n';
 };
 
 
@@ -118,9 +111,9 @@ Blockly.Blocks['coderbot_moveBackward'] = {
 
 Blockly.Python['coderbot_moveBackward'] = function(block) {
   // Generate Python for moving forward.
-  if(CODERBOT_PROG_MOVE_MOTION) {    
+  if(CODERBOT_PROG_MOVE_MOTION) {
     return 'get_motion().move(dist=' + (-CODERBOT_MOV_FW_DEF_ELAPSE) + ')\n';
-    
+
   } else {
     return 'get_bot().backward(speed=' + CODERBOT_MOV_FW_DEF_SPEED + ', elapse=' + CODERBOT_MOV_FW_DEF_ELAPSE + ')\n';
   }
@@ -177,7 +170,7 @@ Blockly.Python['coderbot_turnRight'] = function(block) {
 
   } else {
     return 'get_bot().right(speed=' + CODERBOT_MOV_TR_DEF_SPEED + ', elapse=' + CODERBOT_MOV_TR_DEF_ELAPSE + ')\n';
-  } 
+  }
 };
 
 Blockly.Blocks['coderbot_audio_say'] = {
@@ -242,7 +235,7 @@ Blockly.Blocks['coderbot_adv_move'] = {
         [Blockly.Msg.CODERBOT_MOVE_ADV_TIP_RIGHT, 'RIGHT']]
     this.setHelpUrl('http://code.google.com/p/blockly/wiki/Move');
     this.setColour(40);
-    
+
     this.appendDummyInput("ACTION")
        .appendField(Blockly.Msg.CODERBOT_MOVE_ADV_MOVE)
        .appendField(new Blockly.FieldDropdown(ACTIONS), 'ACTION');
@@ -345,7 +338,7 @@ Blockly.Blocks['coderbot_adv_motor'] = {
   init: function() {
     this.setHelpUrl('http://code.google.com/p/blockly/wiki/Motor');
     this.setColour(40);
-    
+
     this.appendValueInput('SPEED_LEFT')
         .setCheck('Number')
         .appendField(Blockly.Msg.CODERBOT_MOVE_ADV_MOTOR + " " + Blockly.Msg.CODERBOT_MOVE_ADV_MOTOR_SPEED_LEFT);
@@ -590,7 +583,7 @@ Blockly.Blocks['coderbot_cam_average'] = {
     this.setColour(250);
     this.appendDummyInput()
         .appendField(Blockly.Msg.CODERBOT_SENSOR_AVERAGE)
-        .appendField(new Blockly.FieldDropdown([[Blockly.Msg.CODERBOT_SENSOR_AVERAGE_HUE, 'H'], 
+        .appendField(new Blockly.FieldDropdown([[Blockly.Msg.CODERBOT_SENSOR_AVERAGE_HUE, 'H'],
                                                 [Blockly.Msg.CODERBOT_SENSOR_AVERAGE_SATURATION, 'S'],
                                                 [Blockly.Msg.CODERBOT_SENSOR_AVERAGE_VALUE, 'V'],
                                                 [Blockly.Msg.CODERBOT_SENSOR_AVERAGE_ALL,'ALL']]), 'RETVAL')
@@ -618,7 +611,7 @@ Blockly.Blocks['coderbot_adv_findText'] = {
     this.setColour(250);
     this.appendDummyInput()
         .appendField(Blockly.Msg.CODERBOT_SENSOR_FINDTEXT_FIND)
-        .appendField(new Blockly.FieldDropdown([[Blockly.Msg.CODERBOT_SENSOR_FINDTEXT_ACCEPT_ALPHA, 'alpha'], 
+        .appendField(new Blockly.FieldDropdown([[Blockly.Msg.CODERBOT_SENSOR_FINDTEXT_ACCEPT_ALPHA, 'alpha'],
                                                 [Blockly.Msg.CODERBOT_SENSOR_FINDTEXT_ACCEPT_NUM, 'num'],
                                                 [Blockly.Msg.CODERBOT_SENSOR_FINDTEXT_ACCEPT_ALPHANUM,'alphanum'],
                                                 [Blockly.Msg.CODERBOT_SENSOR_FINDTEXT_ACCEPT_UNSPEC,'unspec']]), 'ACCEPT')
@@ -631,13 +624,6 @@ Blockly.Blocks['coderbot_adv_findText'] = {
   }
 };
 
-Blockly.Python['coderbot_adv_findText'] = function(block) {
-  // Boolean values true and false.
-  var accept = block.getFieldValue('ACCEPT');
-  var color = Blockly.Python.valueToCode(block, 'COLOR', Blockly.Python.ORDER_NONE);
-  var code = 'get_cam().find_text(accept="' + accept + '", back_color=' + color  + ')';
-  return [code, Blockly.Python.ORDER_ATOMIC];
-};
 
 Blockly.Blocks['coderbot_adv_findCode'] = {
   /**
@@ -802,9 +788,7 @@ Blockly.Blocks['coderbot_sonar_get_distance'] = {
     this.setColour(250);
     this.appendDummyInput()
         .appendField(Blockly.Msg.CODERBOT_SONAR_GET_DISTANCE)
-        .appendField(new Blockly.FieldDropdown([[Blockly.Msg.CODERBOT_SONAR_SENSOR_1, "0"],
-                                                [Blockly.Msg.CODERBOT_SONAR_SENSOR_2, "1"],
-                                                [Blockly.Msg.CODERBOT_SONAR_SENSOR_3, "2"]]), 'SONAR');
+        .appendField(new Blockly.FieldDropdown([[Blockly.Msg.CODERBOT_SONAR_SENSOR_1, "0"]]), 'SONAR');
     this.setOutput(true, 'Number');
     this.setTooltip(Blockly.Msg.LOGIC_BOOLEAN_TOOLTIP);
   }
@@ -817,3 +801,60 @@ Blockly.Python['coderbot_sonar_get_distance'] = function(block) {
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
+Blockly.Blocks['awesome_led'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("LED connected to Pin")
+        .appendField(new Blockly.FieldDropdown([["04","4"], ["22","22"], ["23","23"], ["24","24"], ["27","27"]]), "GPIO")
+        .appendField("is")
+        .appendField(new Blockly.FieldDropdown([["ON","1"], ["OFF","0"]]), "LED_State");
+//    this.setOutput(true, 'Number');
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+    this.setTooltip('');
+    this.setHelpUrl('');
+  }
+};
+
+Blockly.Python['awesome_led'] = function(block) {
+  var dropdown_gpio = block.getFieldValue('GPIO');
+  var dropdown_led_state = block.getFieldValue('LED_State');
+  var code = 'get_bot().ledOutput(' + dropdown_gpio + ', ' + dropdown_led_state + ' )\n';
+  return code;
+};
+
+Blockly.Blocks['awesome_button'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Button connected to Pin")
+        .appendField(new Blockly.FieldDropdown([["04","4"], ["22","22"], ["23","23"], ["24","24"], ["27","27"]]), "GPIO")
+        .appendField("is pressed")
+    this.setOutput(true, 'Boolean')
+    this.setColour(230);
+    this.setTooltip('');
+    this.setHelpUrl('');
+  }
+};
+
+Blockly.Python['awesome_button'] = function(block) {
+  var dropdown_gpio = block.getFieldValue('GPIO');
+  var code = 'get_bot().buttonInput(' + dropdown_gpio + ')';
+  return [code, Blockly.Python.ORDER_NONE];
+};
+
+Blockly.Blocks['awesome_line_sensor'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("Detect Line")
+    this.setOutput(true, 'Boolean')
+    this.setColour(230);
+    this.setTooltip('');
+    this.setHelpUrl('');
+  }
+};
+
+Blockly.Python['awesome_line_sensor'] = function(block) {
+  var code = 'get_bot().lineSensor()';
+  return [code, Blockly.Python.ORDER_NONE];
+};

@@ -24,26 +24,22 @@ import json
 import logging
 
 import coderbot
-import camera
-import motion
+#import camera
+#import motion
 import config
-import audio
+#import audio
+
 
 PROGRAM_PATH = "./data/"
 PROGRAM_PREFIX = "program_"
 PROGRAM_SUFFIX = ".data"
 
-def get_cam():
-  return camera.Camera.get_instance()
 
 def get_bot():
   return coderbot.CoderBot.get_instance()
 
-def get_motion():
-  return motion.Motion.get_instance()
-
-def get_audio():
-  return audio.Audio.get_instance()
+#def get_motion():
+# return motion.Motion.get_instance()
 
 def get_prog_eng():
   return ProgramEngine.get_instance()
@@ -58,9 +54,9 @@ class ProgramEngine:
     for dirname, dirnames, filenames,  in os.walk("./data"):
       for filename in filenames:
         if PROGRAM_PREFIX in filename:
-          program_name = filename[len(PROGRAM_PREFIX):-len(PROGRAM_SUFFIX)]    
+          program_name = filename[len(PROGRAM_PREFIX):-len(PROGRAM_SUFFIX)]
           self._repository[program_name] = filename
-    
+
   @classmethod
   def get_instance(cls):
     if not cls._instance:
@@ -69,13 +65,13 @@ class ProgramEngine:
 
   def list(self):
     return self._repository.keys()
-    
+
   def save(self, program):
     self._program = self._repository[program.name] = program
     f = open(PROGRAM_PATH + PROGRAM_PREFIX + program.name + PROGRAM_SUFFIX, 'w')
     json.dump(program.as_json(), f)
     f.close()
-    
+
   def load(self, name):
     #return self._repository[name]
     f = open(PROGRAM_PATH + PROGRAM_PREFIX + name + PROGRAM_SUFFIX, 'r')
@@ -109,7 +105,7 @@ class Program:
     self._thread = None
     self.name = name
     self._dom_code = dom_code
-    self._code = code 
+    self._code = code
 
   def execute(self):
     if self._running:
@@ -142,24 +138,13 @@ class Program:
       #print "run.1"
       bot = coderbot.CoderBot.get_instance()
       program = self
-      try:
-	cam = camera.Camera.get_instance()
-        if config.Config.get().get("prog_video_rec") == "true":
-          get_cam().video_rec(program.name)
-          logging.debug("starting video")
-      except:
-        logging.error("Camera not available")
-      
+
       exec(self._code)
       #print "run.2"
     except RuntimeError as re:
       logging.info("quit: " + str(re))
     finally:
-      try:
-        get_cam().video_stop() #if video is running, stop it
-        get_motion().stop()
-      except:
-        logging.error("Camera not available")
+
       self._running = False
 
   def as_json(self):
@@ -170,4 +155,3 @@ class Program:
   @classmethod
   def from_json(cls, map):
     return Program(name=map['name'], dom_code=map['dom_code'], code=map['code'])
-

@@ -23,6 +23,9 @@ import pigpio
 import config
 import logging
 import sonar
+import awesomeoutput
+import awesomeinput
+
 
 PIN_MOTOR_ENABLE = 22
 PIN_LEFT_FORWARD = 8
@@ -34,27 +37,26 @@ PIN_PUSHBUTTON = 11
 #PIN_SERVO_4 = 10
 PIN_SONAR_1_TRIGGER = 17
 PIN_SONAR_1_ECHO = 18
-#PIN_SONAR_2_TRIGGER = 18
-#PIN_SONAR_2_ECHO = 8
-#PIN_SONAR_3_TRIGGER = 18
-#PIN_SONAR_3_ECHO = 23
-#PIN_ENCODER_LEFT = 14
-#PIN_ENCODER_RIGHT = 15
 
 PWM_FREQUENCY = 100 #Hz
 PWM_RANGE = 100 #0-100
+
+PIN_LINE_SENSOR = 25
+
+#OUTPUT_LED = 1
+#PIN_LED = 24
 
 def coderbot_callback(gpio, level, tick):
   return CoderBot.get_instance().callback(gpio, level, tick)
 
 class CoderBot:
-  _pin_out = [PIN_MOTOR_ENABLE, PIN_LEFT_FORWARD, PIN_RIGHT_FORWARD, PIN_LEFT_BACKWARD, PIN_RIGHT_BACKWARD, PIN_SERVO_3, PIN_SERVO_4]
+  _pin_out = [PIN_MOTOR_ENABLE, PIN_LEFT_FORWARD, PIN_RIGHT_FORWARD, PIN_LEFT_BACKWARD, PIN_RIGHT_BACKWARD]
 
   def __init__(self, servo=False, motor_trim_factor=1.0):
     self.pi = pigpio.pi('localhost')
     self.pi.set_mode(PIN_PUSHBUTTON, pigpio.INPUT)
-    self.pi.set_mode(PIN_ENCODER_LEFT, pigpio.INPUT)
-    self.pi.set_mode(PIN_ENCODER_RIGHT, pigpio.INPUT)
+#    self.pi.set_mode(PIN_ENCODER_LEFT, pigpio.INPUT)
+#    self.pi.set_mode(PIN_ENCODER_RIGHT, pigpio.INPUT)
     self._cb = dict()
     self._cb_last_tick = dict()
     self._cb_elapse = dict()
@@ -65,17 +67,15 @@ class CoderBot:
     else:
       self.motor_control = self._dc_motor
     self._cb1 = self.pi.callback(PIN_PUSHBUTTON, pigpio.EITHER_EDGE, coderbot_callback)
-    self._cb2 = self.pi.callback(PIN_ENCODER_LEFT, pigpio.RISING_EDGE, coderbot_callback)
-    self._cb3 = self.pi.callback(PIN_ENCODER_RIGHT, pigpio.RISING_EDGE, coderbot_callback)
     for pin in self._pin_out:
       self.pi.set_PWM_frequency(pin, PWM_FREQUENCY)
       self.pi.set_PWM_range(pin, PWM_RANGE)
 
     self.stop()
     self._is_moving = False
-    self.sonar = [sonar.Sonar(self.pi, PIN_SONAR_1_TRIGGER, PIN_SONAR_1_ECHO),
-                  sonar.Sonar(self.pi, PIN_SONAR_2_TRIGGER, PIN_SONAR_2_ECHO),
-                  sonar.Sonar(self.pi, PIN_SONAR_3_TRIGGER, PIN_SONAR_3_ECHO)]
+    self.sonar = [sonar.Sonar(self.pi, PIN_SONAR_1_TRIGGER, PIN_SONAR_1_ECHO)]
+    self.awesomeoutput = awesomeoutput.Awesomeoutput(self.pi)
+    self.awesomeinput = awesomeinput.Awesomeinput(self.pi, PIN_LINE_SENSOR)
     self._encoder_cur_left = 0
     self._encoder_cur_right = 0
     self._encoder_target_left = -1
@@ -84,8 +84,8 @@ class CoderBot:
 
   def exit(self):
     self._cb1.cancel()
-    self._cb2.cancel()
-    self._cb3.cancel()
+#    self._cb2.cancel()
+#    self._cb3.cancel()
     for s in self.sonar:
       s.cancel()
 
@@ -121,6 +121,15 @@ class CoderBot:
 
   def get_sonar_distance(self, sonar_id=0):
     return self.sonar[sonar_id].get_distance()
+
+  def ledOutput(self, pin_led, output_led):
+    self.awesomeoutput.ledOutput(pin_led, output_led)
+
+  def buttonInput(self, pin_button):
+    return self.awesomeinput.buttonInput(pin_button)
+
+  def lineSensor(self):
+    return self.awesomeinput.lineSensor()
 
   def _dc_motor(self, speed_left=100, speed_right=100, elapse=-1, steps_left=-1, steps_right=-1 ):
     self._encoder_cur_left = 0

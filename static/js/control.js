@@ -2,7 +2,7 @@ var bot = new CoderBot('#b_counter');
 
 $(document).on( "pagecontainershow", function(){
     ScaleContentToDevice();
-    
+
     $(window).on("resize orientationchange", function(){
         ScaleContentToDevice();
     })
@@ -12,20 +12,20 @@ function ScaleContentToDevice(){
     scroll(0, 0);
     var w = $( window ).width();
     var h = $( window ).height();
-  
+
     var width =  w;
     var height = h - $(".ui-header").outerHeight() - $(".ui-footer").outerHeight();
     var contentHeight = height - $(".ui-content").outerHeight() + $(".ui-content").height();
     var contentWidth = (contentHeight * 4) / 3;
 
     if (width - contentWidth > 384) {
-      $("#ui_control_left").width((width - contentWidth)/2);
-      $("#ui_control_center").width(contentWidth);
-      $("#ui_control_right").width((width - contentWidth)/2);      
+      $("#ui_control_left").width(contentWidth);
+      $("#ui_control_center").width((width - contentWidth)/2);
+      $("#ui_control_right").width((width - contentWidth)/2);
     } else {
-      $("#ui_control_left").width((width)/2);
-      $("#ui_control_center").width(0);
-      $("#ui_control_right").width((width)/2);      
+      $("#ui_control_left").width(0);
+      $("#ui_control_center").width((width)/2);
+      $("#ui_control_right").width((width)/2);
     }
 
     $(".ui-content-stream").height(contentHeight);
@@ -40,7 +40,7 @@ $(document).on( "pageshow", '#page-control', function( event, ui ) {
 
 $(document).on( "pagecreate", '#page-control', function( event ) {
 	if(Modernizr.touch){
-       	        /* browser with either Touch Events of Pointer Events running on touch-capable device */	
+       	        /* browser with either Touch Events of Pointer Events running on touch-capable device */
 		$('#b_forward')
 	  	.on("touchstart", function (){bot.move(CODERBOT_CTRL_FW_SPEED,CODERBOT_CTRL_FW_ELAPSE);})
 	  	.on("touchend", function (){bot.stop();});
@@ -98,7 +98,7 @@ $(document).on( "pagecreate", '#page-control', function( event ) {
                 canvas.getContext('2d').drawImage(img.get(0), 0, 0, img.width(), img.height());
                 var pixelData = canvas.getContext('2d').getImageData(x, y, 1, 1).data;
                 var colorHex = "#" + paddedHexString(pixelData[0]) + paddedHexString(pixelData[1]) + paddedHexString(pixelData[2]);
-		alert("Color at point: " + colorHex); 
+		alert("Color at point: " + colorHex);
         });
 	$( ".photopopup" ).on({
         	popupbeforeposition: function() {
@@ -111,7 +111,7 @@ $(document).on( "pagecreate", '#page-control', function( event ) {
 
 function paddedHexString(n) {
         var ns = n.toString(16);
-	return ("00" + ns).substring(ns.length); 
+	return ("00" + ns).substring(ns.length);
 }
 
 
@@ -128,7 +128,7 @@ function findPos(obj) {
 }
 
 $(document).on( "pagecreate", '#page-preferences', function( event ) {
-	$('#f_config').on("submit", function (){	
+	$('#f_config').on("submit", function (){
 		var form_data = $(this).serialize();
                 $.post(url='/config', form_data, success=function(){
                   alert(BotMessages.Saved);
@@ -164,7 +164,7 @@ $(document).on( "pagecreate", '#page-preferences', function( event ) {
         });
         $('#b_update').on("click", function (){
                 if(confirm(BotMessages.UpdateSystem)){
-		        $('#popup-update-system').popup('open');	
+		        $('#popup-update-system').popup('open');
                         $.get(url='/update', success=function (data) {
                                 $('#i_update_system_log').text(data);
                                 $('#b_update_system_close').removeClass('ui-disabled');
@@ -191,7 +191,7 @@ $('li.ui-li-has-thumb').hover( function( event ) {
 $('video').on('loadeddata', function( event, ui ) {
         $( '#popup-video' ).popup( 'reposition', 'positionTo: window' );
 });
-        }, dataType="json");       
+        }, dataType="json");
 });
 
 $(document).on( "click", 'a[data-rel="popup"]', function( event ) {
@@ -223,7 +223,7 @@ Mousetrap.bind(['command+alt+h', 'ctrl+alt+h'], function(e) {
         	bot.halt();
 	}
 });
- 
+
 botStatus();
 
 function botStatus() {

@@ -47,7 +47,7 @@ $(document).on( "pagecreate", '#page-program', function( event ) {
         }});
       } catch (e) {
         alert(e);
-      }      
+      }
     }
 
     function newProg() {
@@ -73,7 +73,7 @@ $(document).on( "pagecreate", '#page-program', function( event ) {
         var name = progList[i];
         $('#i_prog_list').append('<li data-prog-name="' + name +'"><a href="#" class="c_load_prog"><h2>'+name+'</h2></a><a href="#" class="c_delete_prog">Delete program</a></li>');
       }
-      $('#i_prog_list').listview('refresh'); 
+      $('#i_prog_list').listview('refresh');
       $('.c_load_prog').on('click', loadProgPost);
       $('.c_delete_prog').on('click', deleteProg);
       $("#dialogLoadProg").popup("open", {transition: "pop"});
@@ -132,7 +132,7 @@ $(document).on( "pagecreate", '#page-program', function( event ) {
     }
 
     function deleteProg() {
-      var prog_element = $(this).parent('li'); 
+      var prog_element = $(this).parent('li');
       var name=prog_element.attr('data-prog-name');
       if(confirm("Delete program " + name + "?")) {
         var data =  {'name': name};
@@ -155,7 +155,7 @@ $(document).on( "pagecreate", '#page-program', function( event ) {
 
       var bot = new CoderBot();
       // Generate Python code and run it.
-      window.LoopTrap = 1000;  
+      window.LoopTrap = 1000;
       Blockly.Python.INFINITE_LOOP_TRAP = '  get_prog_eng().check_end()\n';
       var code = Blockly.Python.workspaceToCode();
 
@@ -193,11 +193,11 @@ $(document).on( "pagecreate", '#page-program', function( event ) {
         console.log(data.running);
         if(!data.running) {
           $('#b_end_prog_d').text(BotMessages.ProgramDialogClose);
-          $('#i_dialog_running_title').text('CoderBot ' + BotMessages.ProgramStatusStop);
+          $('#i_dialog_running_title').text('RoverBot ' + BotMessages.ProgramStatusStop);
         } else {
           $('#b_end_prog_d').text(BotMessages.ProgramDialogStop);
-          $('#i_dialog_running_title').text('CoderBot ' + BotMessages.ProgramStatusRunning);
+          $('#i_dialog_running_title').text('RoverBot ' + BotMessages.ProgramStatusRunning);
           setTimeout(statusProg, 1000);
-        }  
+        }
       }});
     }

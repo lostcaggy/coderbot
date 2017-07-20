@@ -23,12 +23,12 @@ import logging
 import time
 import logging.handlers
 import subprocess
-import picamera
+#import picamera
 
 from coderbot import CoderBot, PIN_PUSHBUTTON
-from camera import Camera
-from motion import Motion
-from audio import Audio
+#from camera import Camera
+#from motion import Motion
+#from audio import Audio
 from program import ProgramEngine, Program
 from config import Config
 
@@ -38,7 +38,7 @@ from flask_babel import Babel
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
- 
+
 # add a rotating handler
 handler = logging.handlers.RotatingFileHandler('logs/coderbot.log', maxBytes=1000000, backupCount=5)
 logger.addHandler(handler)
@@ -69,7 +69,7 @@ def get_locale():
 
 @app.route("/")
 def handle_home():
-    stream_port = cam.stream_port if cam else "" 
+    stream_port = cam.stream_port if cam else ""
     return render_template('main.html', host=request.host[:request.host.find(':')], stream_port=stream_port, locale = get_locale(), config=app.bot_config, program_level=app.bot_config.get("prog_level", "std"), cam=cam!=None)
 
 @app.route("/config", methods=["POST"])
@@ -159,10 +159,10 @@ def handle_bot():
 @app.route("/bot/status", methods=["GET"])
 def handle_bot_status():
     logging.info( "bot_status" )
-    return json.dumps({'status': 'ok'}) 
+    return json.dumps({'status': 'ok'})
 
 def video_stream(cam):
-    refresh_timeout = float(app.bot_config.get("camera_refresh_timeout", "0.1")) 
+    refresh_timeout = float(app.bot_config.get("camera_refresh_timeout", "0.1"))
     while not app.shutdown_requested:
         last_refresh_time = time.time()
         frame = cam.get_image_jpeg()
@@ -222,7 +222,7 @@ def handle_photo_cmd(filename):
 def handle_photo_thumb(filename):
     logging.debug("photo_thumb")
     return send_file(cam.get_photo_thumb_file(filename))
-   
+
 @app.route("/program/list", methods=["GET"])
 def handle_program_list():
     logging.debug("program_list")
@@ -265,7 +265,7 @@ def handle_program_end():
     logging.debug("program_end")
     if app.prog:
         app.prog.end()
-    app.prog = None  
+    app.prog = None
     return "ok"
 
 @app.route("/program/status", methods=["GET"])
@@ -274,7 +274,7 @@ def handle_program_status():
     prog = Program("")
     if app.prog:
       prog = app.prog
-    return json.dumps({'name': prog.name, "running": prog.is_running()}) 
+    return json.dumps({'name': prog.name, "running": prog.is_running()})
 
 @app.route("/tutorial")
 def handle_tutorial():
@@ -307,14 +307,10 @@ def run_server():
     try:
       app.bot_config = Config.read()
       bot = CoderBot.get_instance(servo=(app.bot_config.get("move_motor_mode")=="servo"), motor_trim_factor=float(app.bot_config.get('move_motor_trim', 1.0)))
-      audio = Audio.get_instance()
-      audio.say(app.bot_config.get("sound_start"))
-      try:
-	cam = Camera.get_instance()
-        #motion = Motion.get_instance()
-      except picamera.exc.PiCameraError:
-        logging.error("Camera not present")
-      
+#      audio = Audio.get_instance()
+#      audio.say(app.bot_config.get("sound_start"))
+
+
       if app.bot_config.get('load_at_start') and len(app.bot_config.get('load_at_start')):
         app.prog = app.prog_engine.load(app.bot_config.get('load_at_start'))
         app.prog.execute()
@@ -323,7 +319,7 @@ def run_server():
       logging.error(e)
 
     bot.set_callback(PIN_PUSHBUTTON, button_pushed, 100)
-    app.run(host="0.0.0.0", port=8080, debug=True, use_reloader=False, threaded=True)
+    app.run(host="roverbot.local", port=8080, debug=True, use_reloader=False, threaded=True)
   finally:
     if cam:
       cam.exit()
